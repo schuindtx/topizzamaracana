@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Top Pizza Maracanã</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+
+  <!-- META PIXEL -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init','SEU_PIXEL_ID');
+    fbq('track','PageView');
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #E8000F;
+      --yellow: #F5C400;
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --border: #242424;
+      --text: #fff;
+      --muted: #666;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+
+    /* Glow de fundo */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(232,0,15,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245,196,0,0.1);
+      border: 1px solid rgba(245,196,0,0.25);
+      color: var(--yellow);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    .pill::before { content: '●'; font-size: 8px; }
+
+    .header h1 {
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    .header h1 .top { color: var(--red); }
+    .header h1 .pizza { color: #fff; }
+
+    .header .city {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* Form */
+    .form-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+    }
+
+    .form-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .form-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .field input {
+      width: 100%;
+      background: #0d0d0d;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .field input:focus {
+      border-color: #444;
+    }
+
+    .field input::placeholder { color: #333; }
+
+    /* Input de data customizado */
+    .field input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.3);
+      cursor: pointer;
+    }
+
+    .btn {
+      width: 100%;
+      margin-top: 8px;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:hover { opacity: 0.9; }
+    .btn:active { transform: scale(0.99); }
+
+    .btn.loading { opacity: 0.6; pointer-events: none; }
+
+    .terms {
+      text-align: center;
+      font-size: 11px;
+      color: #333;
+      margin-top: 16px;
+      line-height: 1.6;
+    }
+
+    .terms a { color: #444; text-decoration: underline; }
+
+    .field .erro {
+      display: none;
+      font-size: 11px;
+      color: var(--red);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    .field.invalido input { border-color: var(--red); }
+    .field.invalido .erro { display: block; }
+
+    /* Sucesso */
+    .success {
+      display: none;
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: rgba(232,0,15,0.1);
+      border: 1px solid rgba(232,0,15,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 20px;
+    }
+
+    .success h2 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .success p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .ig-btn {
+      display: block;
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+
+    .ig-btn:hover { opacity: 0.85; }
+
+    .ig-btn span { color: var(--red); }
+
+    .senha-box {
+      background: #0d0d0d;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 12px;
+    }
+
+    .senha-box .senha-texto {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--yellow);
+    }
+
+    .copiar-btn {
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+
+    .copiar-btn:hover { opacity: 0.85; }
+    .copiar-btn.copiado { background: #1a7a1a; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="header">
+      <div class="pill">Wi-Fi grátis</div>
+      <h1>
+        <span class="top">TOP </span><span class="pizza">PIZZA</span>
+      </h1>
+      <p class="city">Colombo · Maracanã</p>
+    </div>
+
+    <!-- Formulário -->
+    <div class="form-box" id="form-area">
+      <p class="form-title">Preencha para conectar</p>
+      <p class="form-sub">Rápido, é só isso mesmo.</p>
+
+      <form id="wifi-form" novalidate>
+        <div class="field" id="field-nome">
+          <label>Nome</label>
+          <input type="text" id="nome" placeholder="Como te chamam?" required />
+          <span class="erro">Digite seu nome completo</span>
+        </div>
+
+        <div class="field" id="field-telefone">
+          <label>WhatsApp</label>
+          <input type="tel" id="telefone" placeholder="(21) 99999-9999" required />
+          <span class="erro">Telefone inválido — use DDD + número</span>
+        </div>
+
+        <div class="field" id="field-aniversario">
+          <label>Data de nascimento</label>
+          <input type="date" id="aniversario" required />
+          <span class="erro">Data de nascimento inválida</span>
+        </div>
+
+        <button type="submit" class="btn" id="submit-btn">
+          Conectar ao Wi-Fi
+        </button>
+      </form>
+
+      <p class="terms">
+        Ao continuar você aceita receber promoções da<br>
+        <a href="https://instagram.com/topizzamaracana" target="_blank">Top Pizza Maracanã</a>
+      </p>
+    </div>
+
+    <!-- Sucesso -->
+    <div class="form-box success" id="success-area">
+      <div class="success-icon">🍕</div>
+      <h2>Quase lá!</h2>
+      <p>Copie a senha abaixo e conecte no Wi-Fi <strong>Oi_7374</strong>.</p>
+
+      <div class="senha-box">
+        <span class="senha-texto">hFm9b9Te</span>
+        <button class="copiar-btn" id="copiar-btn" onclick="copiarSenha()">Copiar</button>
+      </div>
+
+      <a class="ig-btn" href="https://instagram.com/topizzamaracana" target="_blank">
+        Seguir <span>@topizzamaracana</span>
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    const SENHA_WIFI = 'hFm9b9Te';
+
+    function copiarSenha() {
+      navigator.clipboard.writeText(SENHA_WIFI).then(function() {
+        const btn = document.getElementById('copiar-btn');
+        btn.textContent = 'Copiado!';
+        btn.classList.add('copiado');
+        setTimeout(() => {
+          btn.textContent = 'Copiar';
+          btn.classList.remove('copiado');
+        }, 2000);
+      });
+    }
+
+    // Máscara telefone
+    document.getElementById('telefone').addEventListener('input', function() {
+      let v = this.value.replace(/\D/g, '').slice(0, 11);
+      if (v.length <= 10) v = v.replace(/(\d{2})(\d{4})(\d*)/, '($1) $2-$3');
+      else v = v.replace(/(\d{2})(\d{5})(\d*)/, '($1) $2-$3');
+      this.value = v;
+    });
+
+    function validar() {
+      let ok = true;
+
+      // Nome: pelo menos 2 palavras
+      const nome = document.getElementById('nome').value.trim();
+      const fieldNome = document.getElementById('field-nome');
+      if (nome.split(' ').filter(p => p.length > 0).length < 2) {
+        fieldNome.classList.add('invalido');
+        ok = false;
+      } else {
+        fieldNome.classList.remove('invalido');
+      }
+
+      // Telefone: 10 ou 11 dígitos
+      const tel = document.getElementById('telefone').value.replace(/\D/g, '');
+      const fieldTel = document.getElementById('field-telefone');
+      if (tel.length < 10 || tel.length > 11) {
+        fieldTel.classList.add('invalido');
+        ok = false;
+      } else {
+        fieldTel.classList.remove('invalido');
+      }
+
+      // Data: não pode ser no futuro nem antes de 1900
+      const aniv = document.getElementById('aniversario').value;
+      const fieldAniv = document.getElementById('field-aniversario');
+      const data = new Date(aniv);
+      const hoje = new Date();
+      if (!aniv || data >= hoje || data.getFullYear() < 1900) {
+        fieldAniv.classList.add('invalido');
+        ok = false;
+      } else {
+        fieldAniv.classList.remove('invalido');
+      }
+
+      return ok;
+    }
+
+    document.getElementById('wifi-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      if (!validar()) return;
+
+      const btn = document.getElementById('submit-btn');
+      btn.classList.add('loading');
+      btn.textContent = 'Conectando...';
+
+      const dados = {
+        nome: document.getElementById('nome').value,
+        telefone: document.getElementById('telefone').value,
+        aniversario: document.getElementById('aniversario').value,
+        data_acesso: new Date().toLocaleString('pt-BR'),
+      };
+
+      const GOOGLE_SCRIPT_URL = 'COLE_SUA_URL_AQUI';
+
+      try {
+        if (GOOGLE_SCRIPT_URL !== 'COLE_SUA_URL_AQUI') {
+          await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dados),
+          });
+        }
+      } catch (_) {}
+
+      if (typeof fbq !== 'undefined') {
+        fbq('track', 'Lead', { content_name: 'WiFi Cadastro' });
+      }
+
+      document.getElementById('form-area').style.display = 'none';
+      document.getElementById('success-area').style.display = 'block';
+    });
+  </script>
+</body>
+</html>
